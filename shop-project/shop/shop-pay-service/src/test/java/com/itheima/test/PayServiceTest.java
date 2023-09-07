@@ -25,7 +25,7 @@ public class PayServiceTest {
 
     @Test
     public void createPayment(){
-        long orderId = 351526299216515072L;
+        long orderId = 897150017624739840L;
         TradePay tradePay = new TradePay();
         tradePay.setOrderId(orderId);
         tradePay.setPayAmount(new BigDecimal(880));
@@ -35,8 +35,8 @@ public class PayServiceTest {
     @Test
     public void callbackPayment() throws InterruptedException, RemotingException, MQClientException, MQBrokerException, IOException {
 
-        long payId = 352516176372441088L;
-        long orderId = 351526299216515072L;
+        long payId = 897150506542178304L;
+        long orderId = 897150017624739840L;
 
         TradePay tradePay = new TradePay();
         tradePay.setPayId(payId);

@@ -16,7 +16,7 @@ public class Producer {
         //1.创建消息生产者producer，并制定生产者组名
         TransactionMQProducer producer = new TransactionMQProducer("group5");
         //2.指定Nameserver地址
-        producer.setNamesrvAddr("192.168.25.135:9876;192.168.25.138:9876");
+        producer.setNamesrvAddr("10.7.133.0:9876");
 
         //添加事务监听器
         producer.setTransactionListener(new TransactionListener() {

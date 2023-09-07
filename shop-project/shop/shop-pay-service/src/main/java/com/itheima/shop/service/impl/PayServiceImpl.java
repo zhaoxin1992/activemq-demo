@@ -32,7 +32,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @Service(interfaceClass = IPayService.class)
-public class PayServiceImpl implements IPayService{
+public class PayServiceImpl implements IPayService {
 
     @Autowired
     private TradePayMapper tradePayMapper;
@@ -61,7 +61,7 @@ public class PayServiceImpl implements IPayService{
     @Override
     public Result createPayment(TradePay tradePay) {
 
-        if(tradePay==null || tradePay.getOrderId()==null){
+        if (tradePay == null || tradePay.getOrderId() == null) {
             CastException.cast(ShopCode.SHOP_REQUEST_PARAMETER_VALID);
         }
 
@@ -71,7 +71,7 @@ public class PayServiceImpl implements IPayService{
         criteria.andOrderIdEqualTo(tradePay.getOrderId());
         criteria.andIsPaidEqualTo(ShopCode.SHOP_PAYMENT_IS_PAID.getCode());
         int r = tradePayMapper.countByExample(example);
-        if(r>0){
+        if (r > 0) {
             CastException.cast(ShopCode.SHOP_PAYMENT_IS_PAID);
         }
         //2.设置订单的状态为未支付
@@ -80,25 +80,25 @@ public class PayServiceImpl implements IPayService{
         tradePay.setPayId(idWorker.nextId());
         tradePayMapper.insert(tradePay);
 
-        return new Result(ShopCode.SHOP_SUCCESS.getSuccess(),ShopCode.SHOP_SUCCESS.getMessage());
+        return new Result(ShopCode.SHOP_SUCCESS.getSuccess(), ShopCode.SHOP_SUCCESS.getMessage());
     }
 
     @Override
     public Result callbackPayment(TradePay tradePay) throws InterruptedException, RemotingException, MQClientException, MQBrokerException {
         log.info("支付回调");
         //1. 判断用户支付状态
-        if(tradePay.getIsPaid().intValue()==ShopCode.SHOP_ORDER_PAY_STATUS_IS_PAY.getCode().intValue()){
+        if (tradePay.getIsPaid().intValue() == ShopCode.SHOP_ORDER_PAY_STATUS_IS_PAY.getCode().intValue()) {
             //2. 更新支付订单状态为已支付
             Long payId = tradePay.getPayId();
             TradePay pay = tradePayMapper.selectByPrimaryKey(payId);
             //判断支付订单是否存在
-            if(pay==null){
+            if (pay == null) {
                 CastException.cast(ShopCode.SHOP_PAYMENT_NOT_FOUND);
             }
             pay.setIsPaid(ShopCode.SHOP_ORDER_PAY_STATUS_IS_PAY.getCode());
             int r = tradePayMapper.updateByPrimaryKeySelective(pay);
             log.info("支付订单状态改为已支付");
-            if(r==1){
+            if (r == 1) {
                 //3. 创建支付成功的消息
                 TradeMqProducerTemp tradeMqProducerTemp = new TradeMqProducerTemp();
                 tradeMqProducerTemp.setId(String.valueOf(idWorker.nextId()));
@@ -123,7 +123,7 @@ public class PayServiceImpl implements IPayService{
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        if(result.getSendStatus().equals(SendStatus.SEND_OK)){
+                        if (result.getSendStatus().equals(SendStatus.SEND_OK)) {
                             log.info("消息发送成功");
                             //6. 等待发送结果,如果MQ接受到消息,删除发送成功的消息
                             mqProducerTempMapper.deleteByPrimaryKey(tradeMqProducerTemp.getId());
@@ -133,10 +133,10 @@ public class PayServiceImpl implements IPayService{
                 });
 
             }
-            return new Result(ShopCode.SHOP_SUCCESS.getSuccess(),ShopCode.SHOP_SUCCESS.getMessage());
-        }else{
+            return new Result(ShopCode.SHOP_SUCCESS.getSuccess(), ShopCode.SHOP_SUCCESS.getMessage());
+        } else {
             CastException.cast(ShopCode.SHOP_PAYMENT_PAY_ERROR);
-            return new Result(ShopCode.SHOP_FAIL.getSuccess(),ShopCode.SHOP_FAIL.getMessage());
+            return new Result(ShopCode.SHOP_FAIL.getSuccess(), ShopCode.SHOP_FAIL.getMessage());
         }
 
 
@@ -144,19 +144,20 @@ public class PayServiceImpl implements IPayService{
 
     /**
      * 发送支付成功消息
+     *
      * @param topic
      * @param tag
      * @param key
      * @param body
      */
     private SendResult sendMessage(String topic, String tag, String key, String body) throws InterruptedException, RemotingException, MQClientException, MQBrokerException {
-        if(StringUtils.isEmpty(topic)){
+        if (StringUtils.isEmpty(topic)) {
             CastException.cast(ShopCode.SHOP_MQ_TOPIC_IS_EMPTY);
         }
-        if(StringUtils.isEmpty(body)){
+        if (StringUtils.isEmpty(body)) {
             CastException.cast(ShopCode.SHOP_MQ_MESSAGE_BODY_IS_EMPTY);
         }
-        Message message = new Message(topic,tag,key,body.getBytes());
+        Message message = new Message(topic, tag, key, body.getBytes());
         SendResult sendResult = rocketMQTemplate.getProducer().send(message);
         return sendResult;
     }

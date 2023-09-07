@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 
 @Slf4j
 @Component
-@RocketMQMessageListener(topic = "${mq.order.topic}",consumerGroup = "${mq.order.consumer.group.name}",messageModel = MessageModel.BROADCASTING )
-public class CancelMQListener implements RocketMQListener<MessageExt>{
+@RocketMQMessageListener(topic = "${mq.order.topic}", consumerGroup = "${mq.order.consumer.group.name}", messageModel = MessageModel.BROADCASTING)
+public class CancelMQListener implements RocketMQListener<MessageExt> {
 
 
     @Autowired
@@ -34,7 +34,7 @@ public class CancelMQListener implements RocketMQListener<MessageExt>{
             String body = new String(messageExt.getBody(), "UTF-8");
             MQEntity mqEntity = JSON.parseObject(body, MQEntity.class);
             log.info("接收到消息");
-            if(mqEntity.getUserMoney()!=null && mqEntity.getUserMoney().compareTo(BigDecimal.ZERO)>0){
+            if (mqEntity.getUserMoney() != null && mqEntity.getUserMoney().compareTo(BigDecimal.ZERO) > 0) {
                 //2.调用业务层,进行余额修改
                 TradeUserMoneyLog userMoneyLog = new TradeUserMoneyLog();
                 userMoneyLog.setUseMoney(mqEntity.getUserMoney());

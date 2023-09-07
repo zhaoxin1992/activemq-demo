@@ -6,6 +6,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public class Consumer {
@@ -14,7 +15,7 @@ public class Consumer {
         //1.创建消费者Consumer，制定消费者组名
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("group1");
         //2.指定Nameserver地址
-        consumer.setNamesrvAddr("192.168.25.135:9876;192.168.25.138:9876");
+        consumer.setNamesrvAddr("10.7.133.0:9876");
         //3.订阅主题Topic和Tag
         consumer.subscribe("DelayTopic", "*");
 
@@ -25,7 +26,8 @@ public class Consumer {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
                 for (MessageExt msg : msgs) {
-                    System.out.println("消息ID：【" + msg.getMsgId() + "】,延迟时间：" + (System.currentTimeMillis() - msg.getStoreTimestamp()));
+                    LocalTime now = LocalTime.now();
+                    System.out.println("消息生产：【" + new String(msg.getBody()) + "】,消息消费：" + now);
                 }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
