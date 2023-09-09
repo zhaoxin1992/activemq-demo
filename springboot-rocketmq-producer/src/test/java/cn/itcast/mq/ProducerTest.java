@@ -2,6 +2,7 @@ package cn.itcast.mq;
 
 
 import cn.itcast.MQSpringBootApplication;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MQSpringBootApplication.class})
+@Slf4j
 public class ProducerTest {
 
     @Autowired

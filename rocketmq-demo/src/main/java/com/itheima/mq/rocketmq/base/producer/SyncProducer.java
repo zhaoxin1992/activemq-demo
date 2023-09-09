@@ -16,7 +16,7 @@ public class SyncProducer {
         //1.创建消息生产者producer，并制定生产者组名
         DefaultMQProducer producer = new DefaultMQProducer("group1");
         //2.指定Nameserver地址
-        producer.setNamesrvAddr("192.168.25.135:9876;192.168.25.138:9876");
+        producer.setNamesrvAddr("10.7.133.0:9876");
         //3.启动producer
         producer.start();
 
@@ -27,7 +27,7 @@ public class SyncProducer {
              * 参数二：消息Tag
              * 参数三：消息内容
              */
-            Message msg = new Message("springboot-mq", "Tag1", ("Hello World" + i).getBytes());
+            Message msg = new Message("base", "Tag1", ("Hello buddy" + i).getBytes());
             //5.发送消息
             SendResult result = producer.send(msg);
             //发送状态

@@ -18,7 +18,7 @@ import java.util.Date;
 
 @Component
 @Service(interfaceClass = IUserService.class)
-public class UserServiceImpl implements IUserService{
+public class UserServiceImpl implements IUserService {
 
     @Autowired
     private TradeUserMapper userMapper;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public TradeUser findOne(Long userId) {
-        if(userId==null){
+        if (userId == null) {
             CastException.cast(ShopCode.SHOP_REQUEST_PARAMETER_VALID);
         }
         return userMapper.selectByPrimaryKey(userId);
@@ -37,11 +37,11 @@ public class UserServiceImpl implements IUserService{
     @Override
     public Result updateMoneyPaid(TradeUserMoneyLog userMoneyLog) {
         //1.校验参数是否合法
-        if(userMoneyLog==null ||
-                userMoneyLog.getUserId()==null ||
-                userMoneyLog.getOrderId()==null ||
-                userMoneyLog.getUseMoney()==null||
-                userMoneyLog.getUseMoney().compareTo(BigDecimal.ZERO)<=0){
+        if (userMoneyLog == null ||
+                userMoneyLog.getUserId() == null ||
+                userMoneyLog.getOrderId() == null ||
+                userMoneyLog.getUseMoney() == null ||
+                userMoneyLog.getUseMoney().compareTo(BigDecimal.ZERO) <= 0) {
             CastException.cast(ShopCode.SHOP_REQUEST_PARAMETER_VALID);
         }
 
@@ -55,8 +55,8 @@ public class UserServiceImpl implements IUserService{
         TradeUser tradeUser = userMapper.selectByPrimaryKey(userMoneyLog.getUserId());
 
         //3.扣减余额...
-        if(userMoneyLog.getMoneyLogType().intValue()==ShopCode.SHOP_USER_MONEY_PAID.getCode().intValue()){
-            if(r>0){
+        if (userMoneyLog.getMoneyLogType().intValue() == ShopCode.SHOP_USER_MONEY_PAID.getCode().intValue()) {
+            if (r > 0) {
                 //已经付款
                 CastException.cast(ShopCode.SHOP_ORDER_PAY_STATUS_IS_PAY);
             }
@@ -65,8 +65,8 @@ public class UserServiceImpl implements IUserService{
             userMapper.updateByPrimaryKey(tradeUser);
         }
         //4.回退余额...
-        if(userMoneyLog.getMoneyLogType().intValue()==ShopCode.SHOP_USER_MONEY_REFUND.getCode().intValue()){
-            if(r<0){
+        if (userMoneyLog.getMoneyLogType().intValue() == ShopCode.SHOP_USER_MONEY_REFUND.getCode().intValue()) {
+            if (r < 0) {
                 //如果没有支付,则不能回退余额
                 CastException.cast(ShopCode.SHOP_ORDER_PAY_STATUS_NO_PAY);
             }
@@ -77,7 +77,7 @@ public class UserServiceImpl implements IUserService{
             criteria1.andUserIdEqualTo(userMoneyLog.getUserId());
             criteria1.andMoneyLogTypeEqualTo(ShopCode.SHOP_USER_MONEY_REFUND.getCode());
             int r2 = userMoneyLogMapper.countByExample(userMoneyLogExample2);
-            if(r2>0){
+            if (r2 > 0) {
                 CastException.cast(ShopCode.SHOP_USER_MONEY_REFUND_ALREADY);
             }
             //退款
@@ -87,6 +87,6 @@ public class UserServiceImpl implements IUserService{
         //5.记录订单余额使用日志
         userMoneyLog.setCreateTime(new Date());
         userMoneyLogMapper.insert(userMoneyLog);
-        return new Result(ShopCode.SHOP_SUCCESS.getSuccess(),ShopCode.SHOP_SUCCESS.getMessage());
+        return new Result(ShopCode.SHOP_SUCCESS.getSuccess(), ShopCode.SHOP_SUCCESS.getMessage());
     }
 }

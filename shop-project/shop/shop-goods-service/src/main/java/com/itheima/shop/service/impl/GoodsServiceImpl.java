@@ -42,12 +42,12 @@ public class GoodsServiceImpl implements IGoodsService {
             CastException.cast(ShopCode.SHOP_REQUEST_PARAMETER_VALID);
         }
         TradeGoods goods = goodsMapper.selectByPrimaryKey(goodsNumberLog.getGoodsId());
-        if(goods.getGoodsNumber()<goodsNumberLog.getGoodsNumber()){
+        if (goods.getGoodsNumber() < goodsNumberLog.getGoodsNumber()) {
             //库存不足
             CastException.cast(ShopCode.SHOP_GOODS_NUM_NOT_ENOUGH);
         }
         //减库存
-        goods.setGoodsNumber(goods.getGoodsNumber()-goodsNumberLog.getGoodsNumber());
+        goods.setGoodsNumber(goods.getGoodsNumber() - goodsNumberLog.getGoodsNumber());
         goodsMapper.updateByPrimaryKey(goods);
 
 
@@ -56,9 +56,8 @@ public class GoodsServiceImpl implements IGoodsService {
         goodsNumberLog.setLogTime(new Date());
         goodsNumberLogMapper.insert(goodsNumberLog);
 
-        return new Result(ShopCode.SHOP_SUCCESS.getSuccess(),ShopCode.SHOP_SUCCESS.getMessage());
+        return new Result(ShopCode.SHOP_SUCCESS.getSuccess(), ShopCode.SHOP_SUCCESS.getMessage());
     }
-
 
 
 }
