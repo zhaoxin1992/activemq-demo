@@ -1,0 +1,15 @@
+.idea
+.mvn
+.svn
+out
+classes
+target
+**/target
+**/classes
+**/lib
+*.iml
+logs
+.DS_Store
+**/.DS_Store
+/.project
+!.gitignore
